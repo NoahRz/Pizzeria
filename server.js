@@ -38,6 +38,8 @@ const cors = require("cors")
 //Create an application 
 const app = express();
 
+const PORT = process.env.PORT || 3000;
+
 //Used for Jsonwebtoken (in login)
 const passport = require('passport'); // maybe allow user to connect with facbook or google (later)
 const JwtStrategy = require('passport-jwt').Strategy;
@@ -70,7 +72,7 @@ const infoLogger = loggers.get('infoLogger');
 
 //Connecting to MongoDB (async/await approach)
 const connectDb = async () => {
-  await mongoose.connect('mongodb://localhost:27017/pizzeria', { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true }).then(
+  await mongoose.connect('mongodb+srv://noahrz-admin:noahrz-admin@cluster0.2oevv.mongodb.net/pizzeria', { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true }).then(
     () => { //  mongodb://localhost:27017 c'est l'adresse du serveur mongo dans mon local et pizzaria est le repertoire de mon projet dans mon serveur local ( si le repertoire pizza n'existe pas, il va le créer lui même)
       console.log(chalk.green(`Connected to database`))
       infoLogger.info("Connected to database");
@@ -93,7 +95,7 @@ app.use(session({
   resave: true,
   saveUninitialized: true,
   secret: 'myVerySecretKey', //dotenv ?
-  store: new MongoStore({ url: 'mongodb://localhost:27017/auth', autoReconnect: true })
+  store: new MongoStore({ url: 'mongodb+srv://noahrz-admin:noahrz-admin@cluster0.2oevv.mongodb.net/pizzeria', autoReconnect: true })
 
 }));
 
@@ -141,7 +143,7 @@ const userRoutes = require('./routes/user');
 const authRoutes = require('./routes/auth');
 const dessertRoutes = require('./routes/dessert');
 const drinkRoutes = require('./routes/drink');
-const ingredientRoutes = require('./routes/ingredient');
+//const ingredientRoutes = require('./routes/ingredient');
 const menuRoutes = require('./routes/menu');
 const menuOfTheDayRoutes = require('./routes/menuOfTheDay');
 const orderRoutes = require('./routes/order');
@@ -155,7 +157,7 @@ app.use('/api/v1/', authRoutes);
 app.use('/api/v1/', userRoutes);
 app.use('/api/v1/', dessertRoutes);
 app.use('/api/v1/', drinkRoutes);
-app.use('/api/v1/', ingredientRoutes);
+//app.use('/api/v1/', ingredientRoutes);
 app.use('/api/v1/', menuRoutes);
 app.use('/api/v1/', menuOfTheDayRoutes);
 app.use('/api/v1/', orderRoutes);
@@ -169,11 +171,11 @@ app.use('/api/v1/', tableRoutes);
 app.use(http404.notFound);
 
 //Listen on the port 3000
-app.listen(3000, () => {
+app.listen(PORT, () => {
   //Add info to the loggers
-  infoLogger.info('Server is running on port: 3000');
+  infoLogger.info('Server is running on port:' + PORT);
 
 });
 
 //Print out where the server is
-console.log(chalk.green("Server is running on port: 3000"));
+console.log(chalk.green("Server is running on port:" + PORT));
